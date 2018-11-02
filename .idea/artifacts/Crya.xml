@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Crya">
+    <output-path>$PROJECT_DIR$/out/artifacts/Crya</output-path>
+    <root id="archive" name="Crya.jar" />
+  </artifact>
+</component>
