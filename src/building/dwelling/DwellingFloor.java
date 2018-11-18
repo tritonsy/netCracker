@@ -3,9 +3,11 @@ package building.dwelling;
 import building.interfaces.Floor;
 import building.interfaces.Space;
 
+import java.io.Serializable;
+
 //Создаем публичный класс DwellingFloor этажа жилого здания
 //                              основанного на массиве квартир
-public class DwellingFloor implements Floor {
+public class DwellingFloor implements Floor, Serializable {
     private Space arrayOfFlats[];
 
     //Конструктор, который принимает количество квартир

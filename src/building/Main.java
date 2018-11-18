@@ -3,12 +3,17 @@ package building;
 import building.dwelling.Dwelling;
 import building.dwelling.DwellingFloor;
 import building.dwelling.Flat;
+import building.interfaces.Building;
 import building.office.Office;
 import building.office.OfficeBuilding;
 import building.office.OfficeFloor;
+import building.utlility.Buildings;
+
+import java.io.*;
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException{
 /**         Flat[] flats = new Flat[5];
         for (int i = 0; i < 5; i++) flats[i] = new Flat();
         System.out.println("--------------Exercise 1--------------");
@@ -60,7 +65,7 @@ public class Main {
         System.out.println(dwellings[1]);
         System.out.println("Amount of flats in Dwelling #0 = "+dwellings[0].getSpaceCount());
         dwellings[1].getSortedSpaces(); **/
-        System.out.println("--------------Exercise 1--------------");
+   /**     System.out.println("--------------Exercise 1--------------");
         Office[] offices = new Office[4];
         offices[0] = new Office(1, 30);
         offices[1] = new Office(2, 45);
@@ -72,6 +77,53 @@ public class Main {
         officeFloors[2] = new OfficeFloor(3);
         OfficeBuilding[] officeDwellings = new OfficeBuilding[1];
         officeDwellings[0] = new OfficeBuilding(officeFloors);
-        System.out.println(officeDwellings[0]);
+        System.out.println(officeDwellings[0]);**/
+        Building Test = new Dwelling(3,3,4,5,2);
+        try {
+            FileWriter TestWriter = new FileWriter("1.txt");
+            Buildings.writeBuilding(Test, TestWriter);
+            System.out.println(Test.toString());
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+     /**   try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("out.ser"));
+            Buildings.serializeBuilding(Test, out);
+            out.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream("out.ser"));
+            System.out.println(Buildings.deserializeBuilding(in).toString());
+            in.close();
+        }
+
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        try {
+            FileWriter TestWriter = new FileWriter("2.txt");
+            Buildings.writeBuildingFormat(Test,TestWriter);
+            System.out.println(Test.toString());
+        }
+
+        catch (IOException e){
+            e.printStackTrace();
+        }**/
+        try {
+            FileReader TestWriter = new FileReader("1.txt");
+            System.out.println(Buildings.readBuilding(TestWriter));
+        }
+
+        catch (IOException e){
+            e.printStackTrace();
+        }
+     //       Scanner in = new Scanner(System.in);
+       //     System.out.println(Buildings.readBuilding(in).toString());
+
+
     }
 }

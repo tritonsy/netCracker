@@ -2,9 +2,11 @@ package building.dwelling;
 
 import building.interfaces.Space;
 
+import java.io.Serializable;
+
 //Создаем публичный класс Flat квартиры жилого дома
 //Квартира не хранит свой номер
-public class Flat implements Space {
+public class Flat implements Space, Serializable {
     public static final int DEF_ROOM_AMOUNT = 2;//Константа комнат
     public static final int DEF_SQUARE = 50;    //Константа площади комнат
     private int roomAmount, square;

@@ -4,7 +4,9 @@ import building.interfaces.Building;
 import building.interfaces.Floor;
 import building.interfaces.Space;
 
-public class Dwelling implements Building {
+import java.io.Serializable;
+
+public class Dwelling implements Building, Serializable {
     private Floor floorArray[];
 
     //Конструктор, который принимает количество этажей и массив количества квартир по этажам
