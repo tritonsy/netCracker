@@ -1,5 +1,7 @@
 package building.exceptions;
 
 public class InexchangeableFloorsException extends Exception {
-    public InexchangeableFloorsException(String s) {super(s); }
+    public InexchangeableFloorsException(String s) {
+        super(s);
+    }
 }

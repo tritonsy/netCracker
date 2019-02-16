@@ -6,13 +6,16 @@ import building.interfaces.Building;
 import building.interfaces.Floor;
 import building.interfaces.Space;
 
+import java.io.Serializable;
+import java.util.Iterator;
+
 /**
  * Работа класса основана на двусвязном циклическмом списке этажей
  * с выделенной головой
  * Номер офиса явно не хранится
  */
 
-public class OfficeBuilding implements Building {
+public class OfficeBuilding implements Building, Serializable, Cloneable {
     private Node head;
 
     private class Node {
@@ -20,6 +23,7 @@ public class OfficeBuilding implements Building {
         private Node prev;
         private Floor officeFloor;
     }
+
     //Приватный метод получения узла по его номеру
     private Node getNode(int position) {
         Node tmpNode = head;
@@ -40,6 +44,7 @@ public class OfficeBuilding implements Building {
         tmpNode.next.prev = node;
         tmpNode.next = node;
     }
+
     //Приватный метод удаления узла из списка по его номеру
     private void deleteNode(int position) {
         Node tmpNode = head;
@@ -287,5 +292,64 @@ public class OfficeBuilding implements Building {
             else s1.append(this.getFloor(i).toString());
         }
         return s1.toString();
+    }
+
+    /**
+     * Добавьте в классы этажей реализации методов boolean equals(Object object). Метод должен возвращать true
+     * только в том случае, если объект, на который передана ссылка, является этажом соответствующего типа,
+     * количество помещений совпадает и сами помещения эквивалентны помещениям текущего объекта.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OfficeBuilding that = (OfficeBuilding) o;
+
+        if (this.getFloorCount() == that.getFloorCount() && this.getSpaceCount() == that.getSpaceCount() && this.getRoomCount() == that.getRoomCount() && this.getSpace() == that.getSpace()) {
+            for (int i = 0; i < this.getFloorCount(); i++) {
+                if (!this.getFloor(i).equals(that.getFloor(i))) return false;
+            }
+        } else return false;
+        return true;
+    }
+
+    /**
+     * Добавьте в классы зданий реализации методов int hashCode(). Значение хеш-функции здания вычисляется как
+     * значение побитового исключающего ИЛИ количества этажей здания и значений хеш-функций этажей здания.
+     */
+    @Override
+    public int hashCode() {
+        int hash = this.getFloorCount();
+        for (int i = 0; i < this.getFloorCount(); i++) {
+            hash ^= this.getFloor(i).hashCode();
+        }
+        return hash;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Building clone = new OfficeBuilding(this.getFloors());
+        for (int i = 0; i < this.getFloorCount(); i++) {
+            clone.setFloor(i, (Floor) this.getFloor(i).clone());
+        }
+        return clone;
+    }
+
+    @Override
+    public Iterator<Floor> iterator() {
+        return new Iterator<Floor>() {
+            private int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return index < OfficeBuilding.this.getFloorCount() - 1;
+            }
+
+            @Override
+            public Floor next() {
+                return OfficeBuilding.this.getFloor(index);
+            }
+        };
     }
 }

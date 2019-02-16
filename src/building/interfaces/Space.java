@@ -1,6 +1,6 @@
 package building.interfaces;
 
-public interface Space{
+public interface Space extends Comparable<Space> {
 
     int getRoomAmount();
 
@@ -10,4 +10,5 @@ public interface Space{
 
     void setSquare(int square);
 
+    Object clone() throws CloneNotSupportedException;
 }

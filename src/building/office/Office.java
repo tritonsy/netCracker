@@ -55,4 +55,45 @@ public class Office implements Space {
         return ("Office (" + this.getRoomAmount() + ", " + this.getSquare()) + ")";
     }
 
+    /**
+     * Добавьте в классы помещений реализации методов boolean equals(Object object). Метод должен возвращать true
+     * только в том случае, если объект, на который передана ссылка, является помещением соответствующего типа и
+     * все соответствующие параметры помещений равны.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Office office = (Office) o;
+
+        if (getSquare() != office.getSquare()) return false;
+        return roomCount == office.roomCount;
+    }
+
+    /**
+     * Добавьте в классы помещений реализации методов int hashCode(). Значение хеш-функции помещения можно вычислить
+     * как значение последовательного побитового исключающего ИЛИ битового представления количества комнат
+     * помещения, и, например, первых 4 байтов и вторых 4-х байтов (для типа double) битовых представлений
+     * площадей помещений этажа (следует воспользоваться вспомогательными методами классов-оберток).
+     */
+    @Override
+    public int hashCode() {
+        int result = getSquare();
+        result ^= 31 * result + roomCount;
+        return result;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Space clone = (Space) super.clone();
+        clone.setRoomAmount(this.roomCount);
+        clone.setSquare(this.square);
+        return clone;
+    }
+
+    @Override
+    public int compareTo(Space o) {
+        return Integer.compare(square, o.getSquare());
+    }
 }

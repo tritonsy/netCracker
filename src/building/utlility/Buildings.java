@@ -1,13 +1,14 @@
 package building.utlility;
 
-import building.dwelling.Dwelling;
-import building.dwelling.DwellingFloor;
-import building.dwelling.Flat;
+import building.decorators.SynchronizedFloor;
+import building.facrotries.DwellingFactory;
 import building.interfaces.Building;
+import building.interfaces.BuildingFactory;
 import building.interfaces.Floor;
 import building.interfaces.Space;
 
 import java.io.*;
+import java.util.Comparator;
 import java.util.Formatter;
 import java.util.Scanner;
 
@@ -16,6 +17,8 @@ public class Buildings {
      * Запись данных о здании в байтовый поток
      * public static void outputBuilding (Building building, OutputStream out);
      */
+    private static BuildingFactory factory = new DwellingFactory();
+
     public static void outputBuilding(Building building, OutputStream out) throws IOException {
         DataOutputStream oout = new DataOutputStream(out);
         oout.writeInt(building.getFloorCount());
@@ -41,12 +44,11 @@ public class Buildings {
             flatOnFloor = iin.readInt();
             Space[] flats = new Space[flatOnFloor];
             for (int j = 0; j < flatOnFloor; j++) {
-                flats[j] = new Flat(iin.readInt(), iin.readInt());
+                flats[j] = createSpace(iin.readInt(), iin.readInt());
             }
-            bufFloor[i] = new DwellingFloor(flats);
+            bufFloor[i] = createFloor(flats);
         }
-        Building building = new Dwelling(bufFloor);
-        return building;
+        return createBuilding(bufFloor);
     }
 
     /**
@@ -65,7 +67,6 @@ public class Buildings {
                 out.append(bufString);
             }
         }
-        out.close();
     }
 
     /**
@@ -87,11 +88,11 @@ public class Buildings {
                 tmpToken.nextToken();
                 int buf = (int) tmpToken.nval;
                 tmpToken.nextToken();
-                flats[j] = new Flat(buf, (int) tmpToken.nval);
+                flats[j] = createSpace(buf, (int) tmpToken.nval);
             }
-            bufFloor[i] = new DwellingFloor(flats);
+            bufFloor[i] = createFloor(flats);
         }
-        return new Dwelling(bufFloor);
+        return createBuilding(bufFloor);
     }
 
     public static void serializeBuilding(Building building, OutputStream out) throws IOException {
@@ -113,28 +114,84 @@ public class Buildings {
                 f.format("%d %d ", building.getFloor(i).getSpace(j).getRoomAmount(), building.getFloor(i).getSpace(j).getSquare());
             }
         }
-        out.write(f.toString());
-        out.close();
     }
 
-    public static Building readBuilding(Scanner scanner) {
-        System.out.println("Enter count of floors: ");
-        int floorsCount = scanner.nextInt();
-        Floor[] floors = new Floor[floorsCount];
-        for (int i = 0; i < floorsCount; i++) {
-            System.out.println("Enter count of flats on floor #" + i + ": ");
-            int spacesCount = scanner.nextInt();
-            Space[] spaces = new Space[spacesCount];
-            for (int j = 0; j < spacesCount; j++) {
-                System.out.println("Enter count of rooms: ");
-                int rooms = scanner.nextInt();
-                System.out.println("Enter square: ");
-                int area = Integer.parseInt(scanner.next());
-                spaces[j] = new Flat(rooms, area);
+    public static Building readBuilding(Scanner scnr) {
+        int floorAmount = scnr.nextInt();
+        Floor[] bufFloor = new Floor[floorAmount];
+        int flatOnFloor = 0;
+        for (int i = 0; i < floorAmount; i++) {
+            flatOnFloor = scnr.nextInt();
+            Space[] flats = new Space[flatOnFloor];
+            for (int j = 0; j < flatOnFloor; j++) {
+                int buf = scnr.nextInt();
+                flats[j] = createSpace(buf, scnr.nextInt());
             }
-            floors[i] = new DwellingFloor(spaces);
+            bufFloor[i] = createFloor(flats);
         }
-        return new Dwelling(floors);
+        return createBuilding(bufFloor);
     }
 
+    public static <T extends Comparable<T>> T[] sort(T[] objs) {
+        int i, j;
+        T newValue;
+        for (i = 1; i < objs.length; i++) {
+            newValue = objs[i];
+            j = 1;
+            while (j > 0 && objs[j - 1].compareTo(newValue) < 0) {
+                objs[j] = objs[j - 1];
+                j--;
+            }
+            objs[j] = newValue;
+        }
+        return objs;
+    }
+
+    public static <T> T[] sort(T[] objs, Comparator<T> comparator) {
+        int i, j;
+        T newValue;
+        for (i = 1; i < objs.length; i++) {
+            newValue = objs[i];
+            j = 1;
+            while (j > 0 && comparator.compare(objs[j - 1], newValue) < 0) {
+                objs[j] = objs[j - 1];
+                j--;
+            }
+            objs[j] = newValue;
+        }
+        return objs;
+    }
+
+
+    public static void setFactory(BuildingFactory factory) {
+        Buildings.factory = factory;
+    }
+
+    public static Space createSpace(int area) {
+        return factory.createSpace(area);
+    }
+
+    public static Space createSpace(int roomsCount, int area) {
+        return factory.createSpace(roomsCount, area);
+    }
+
+    public static Floor createFloor(int spaceCount) {
+        return factory.createFloor(spaceCount);
+    }
+
+    public static Floor createFloor(Space[] spaces) {
+        return factory.createFloor(spaces);
+    }
+
+    public static Building createBuilding(Floor[] floors) {
+        return factory.createBuilding(floors);
+    }
+
+    public static Building createBuilding(int floorsCount, int[] spaceCounts) {
+        return factory.createBuilding(floorsCount, spaceCounts);
+    }
+
+    public static Floor synchronizedFloor(Floor floor) {
+        return new SynchronizedFloor(floor);
+    }
 }

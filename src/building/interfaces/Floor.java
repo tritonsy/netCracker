@@ -1,6 +1,8 @@
 package building.interfaces;
 
-public interface Floor{
+import building.exceptions.SpaceIndexOutOfBoundsException;
+
+public interface Floor extends Comparable<Floor>, Iterable<Space> {
 
     int getSpaceCount();
 
@@ -10,13 +12,15 @@ public interface Floor{
 
     Space[] getSpaces();
 
-    Space getSpace(int spacePosition);
+    Space getSpace(int spacePosition) throws SpaceIndexOutOfBoundsException;
 
-    void setSpace(int spacePosition, Space space);
+    void setSpace(int spacePosition, Space space) throws SpaceIndexOutOfBoundsException;
 
-    void addSpace(int spacePosition, Space space);
+    void addSpace(int spacePosition, Space space) throws SpaceIndexOutOfBoundsException;
 
-    void delSpace(int spacePosition);
+    void delSpace(int spacePosition) throws SpaceIndexOutOfBoundsException;
 
     Space getBestSpace();
+
+    Object clone() throws CloneNotSupportedException;
 }

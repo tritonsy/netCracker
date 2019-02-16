@@ -4,10 +4,11 @@ import building.interfaces.Floor;
 import building.interfaces.Space;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 //Создаем публичный класс DwellingFloor этажа жилого здания
 //                              основанного на массиве квартир
-public class DwellingFloor implements Floor, Serializable {
+public class DwellingFloor implements Floor, Serializable, Cloneable {
     private Space arrayOfFlats[];
 
     //Конструктор, который принимает количество квартир
@@ -110,6 +111,70 @@ public class DwellingFloor implements Floor, Serializable {
             else s1.append(this.getSpace(i).toString());
         }
         return s1.toString() + ")";
+    }
+
+    /**
+     * Добавьте в классы этажей реализации методов boolean equals(Object object). Метод должен возвращать true
+     * только в том случае, если объект, на который передана ссылка, является этажом соответствующего типа,
+     * количество помещений совпадает и сами помещения эквивалентны помещениям текущего объекта.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DwellingFloor that = (DwellingFloor) o;
+
+        if (this.getSpaceCount() == that.getSpaceCount() && this.getRoomCount() == that.getRoomCount() && this.getSquare() == that.getSquare()) {
+            for (int i = 0; i < this.getSpaceCount(); i++) {
+                if (!this.getSpace(i).equals(that.getSpace(i))) return false;
+            }
+        } else return false;
+        return true;
+    }
+
+    /**
+     * Добавьте в классы этажей реализации методов int hashCode(). Значение хеш-функции этажа можно вычислить
+     * как значение побитового исключающего ИЛИ количества помещений на этаже и значений хеш-функций помещений этажа.
+     */
+    @Override
+    public int hashCode() {
+        int hash = this.getSpaceCount();
+        for (int i = 0; i < this.getSpaceCount(); i++) {
+            hash ^= this.getSpace(i).hashCode();
+        }
+        return hash;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Floor clone = new DwellingFloor(this.getSpaces().length);
+        for (int i = 0; i < this.getSpaceCount(); i++) {
+            clone.setSpace(i, (Space) this.arrayOfFlats[i].clone());
+        }
+        return clone;
+    }
+
+    @Override
+    public int compareTo(Floor o) {
+        return Integer.compare(getSpaceCount(), o.getSpaceCount());
+    }
+
+    @Override
+    public Iterator<Space> iterator() {
+        return new Iterator<Space>() {
+            private int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return index < DwellingFloor.this.getSpaceCount() - 1;
+            }
+
+            @Override
+            public Space next() {
+                return DwellingFloor.this.getSpace(index);
+            }
+        };
     }
 
 }

@@ -1,10 +1,10 @@
 package building.utlility;
 
+import building.exceptions.InexchangeableFloorsException;
+import building.exceptions.InexchangeableSpacesException;
 import building.interfaces.Building;
 import building.interfaces.Floor;
 import building.interfaces.Space;
-import building.exceptions.InexchangeableFloorsException;
-import building.exceptions.InexchangeableSpacesException;
 
 public class PlacementExchanger {
 
